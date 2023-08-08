@@ -5,7 +5,7 @@ const Image = require('../models/Image');
 
 const getAll = catchError(async(req, res) => {
     const results = await Cart.findAll({ 
-        include: [ Product, Product.images ], 
+        include: [{ model:Product, include: [Image] }], 
         where: { userId: req.user.id } 
     });
     return res.json(results);
