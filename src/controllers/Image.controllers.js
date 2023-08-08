@@ -1,9 +1,10 @@
 const catchError = require('../utils/catchError');
 const Image = require('../models/Image');
 const { uploadToCloudinary, deleteFromCloudinary } = require('../utils/cloudinary');
+const Product = require('../models/Product');
 
 const getAll = catchError(async(req, res) => {
-    const images = await Image.findAll();
+    const images = await Image.findAll({include: [Product]});
     return res.json(images);
 });
 
