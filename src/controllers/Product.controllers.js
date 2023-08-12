@@ -3,10 +3,33 @@ const Product = require('../models/Product');
 const Category = require('../models/Category');
 const Image = require('../models/Image');
 
-const getAll = catchError(async(req, res) => {
-    const results = await Product.findAll({ include: [ Category, Image ]});
-    return res.json(results);
+const getAll = catchError(async (req, res) => {
+    const { title, categoryId } = req.query;
+    let filters = {}; 
+
+    if (title) {
+        filters.title = { [Sequelize.Op.iLike]: `%${title}%` }; // iLike para hacer una búsqueda insensible a mayúsculas y minúsculas.
+    }
+    if (categoryId) {
+        if (Array.isArray(categoryId)) {
+            filters.categoryId = { [Sequelize.Op.in]: categoryId };
+        } else {
+            filters.categoryId = categoryId;
+        }
+    }
+    if (Object.keys(filters).length === 0) {
+        const allProducts = await Product.findAll({ include: [Category, Image] });
+        return res.json(allProducts);
+    }
+
+    const filteredProducts = await Product.findAll({
+        where: filters,
+        include: [Category, Image],
+    });
+
+    return res.json(filteredProducts);
 });
+
 
 const create = catchError(async(req, res) => {
     const result = await Product.create(req.body);
