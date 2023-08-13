@@ -7,10 +7,12 @@ const getAll = catchError(async (req, res) => {
     const { title, categoryId } = req.query;
     let filters = {}; 
 
-    if (title !== undefined && title !== "") {
-        filters.title = { [Sequelize.Op.iLike]: `%${title}%` };
+    if (title !== undefined ) {
+        if (title !== ""){
+            filters.title = { [Sequelize.Op.iLike]: `%${title}%` };
+        }
     }
-    if (categoryId) {
+    if (categoryId !== undefined && categoryId !== '' ) {
         if (Array.isArray(categoryId)) {
             filters.categoryId = { [Sequelize.Op.in]: categoryId };
         } else {
