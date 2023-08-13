@@ -7,8 +7,8 @@ const getAll = catchError(async (req, res) => {
     const { title, categoryId } = req.query;
     let filters = {}; 
 
-    if (title) {
-        filters.title = { [Sequelize.Op.iLike]: `%${title}%` }; // iLike para hacer una búsqueda insensible a mayúsculas y minúsculas.
+    if (title !== undefined && title !== "") {
+        filters.title = { [Sequelize.Op.iLike]: `%${title}%` };
     }
     if (categoryId) {
         if (Array.isArray(categoryId)) {
